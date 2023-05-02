@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: article-backend
+  namespace: built-demo
+spec:
+  type: LoadBalancer
+  selector:
+    app: article-backend
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: article-backend
+  namespace: built-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: article-backend
+  template:
+    metadata:
+      labels:
+        app: article-backend
+    spec:
+      containers:
+      - name: article-backend
+        image: localhost:5001/articles-backend:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        env:
+        - name: DB_URL
+          value: jdbc:mysql://mysql.built-demo:3306/mydb?createDatabaseIfNotExist=true
+        - name: DB_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: db-credentials
+              key: DB_USERNAME
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-credentials
+              key: DB_PASSWORD
