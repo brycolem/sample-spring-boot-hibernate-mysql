@@ -31,7 +31,7 @@ spec:
     spec:
       containers:
       - name: article-backend
-        image: localhost:5001/articles-backend:latest
+        image: totalknowledge/articles-backend:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
